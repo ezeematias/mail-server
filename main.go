@@ -23,6 +23,21 @@ func main() {
 
 	r := gin.Default()
 
+	// Middleware para habilitar CORS
+	r.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "https://ezequielunia.com.ar")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	})
+
 	r.POST("/send-email", func(c *gin.Context) {
 		log.Println("[INFO] Nueva petición POST /send-email")
 		var req EmailRequest
